@@ -95,3 +95,57 @@ volumes:
    - ./flow site:import --package-key Neos.Demo
 
 Happy Codding!
+
+# Implementing React App through an Iframe
+
+1. Create a new directory called react-app within your Neos project directory (next to your Packages, Configuration, etc.) and run `npx create-react-app .`
+
+2. Add the following to your existing docker-compose.yml file
+
+```yaml
+services:
+  # ... (existing services)
+  react:
+    build:
+      context: ./react-app
+      dockerfile: Dockerfile.react
+    ports:
+      - 3000:3000
+```
+
+3. Create a new file named Dockerfile.react _inside_ the react-app directory:
+
+```Dockerfile
+# Dockerfile.react
+FROM node:14
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm install
+COPY . .
+EXPOSE 3000
+CMD ["npm", "start"]
+
+```
+
+4. Integrate React Component in Neos
+   - Create in `http://localhost:8081/neos` a new page /react
+   - After using docker compose up the `http://localhost:3000` should run the react app, That means I can create an HTML component and implement an Iframe with this code:
+   ```html
+   <style>
+     body,
+     html {
+       margin: 0;
+       padding: 0;
+       height: 100%;
+     }
+     iframe {
+       display: block;
+       width: 100%;
+       height: 100%;
+       border: none;
+     }
+   </style>
+   <body>
+     <iframe src="http://localhost:3000" frameborder="0"></iframe>
+   </body>
+   ```
