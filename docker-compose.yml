@@ -22,6 +22,13 @@ services:
       - ./Packages/Sites/:/app/Packages/Sites/
     ports:
       - 8081:8081
+  # React
+  react:
+    build:
+      context: ./react-app
+      dockerfile: Dockerfile.react
+    ports:
+      - 3000:3000
   # DB
   db:
     image: mariadb:10.7
